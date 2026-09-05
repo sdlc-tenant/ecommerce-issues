@@ -1,0 +1,24 @@
+name: Trigger SDLC Agent
+
+# Fires when the 'sdlc' label is assigned to an issue.
+# Copy-paste this file to any issue repo — no configuration needed.
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  trigger:
+    if: github.event.label.name == 'sdlc'
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write  # required for OIDC token to call SDLC API
+      contents: read
+
+    steps:
+      - uses: IndentWork/sdlc-actions/trigger-sdlc@main
+        with:
+          issue_number: ${{ github.event.issue.number }}
+          issue_repo:   ${{ github.event.repository.name }}
+          env:          dev
